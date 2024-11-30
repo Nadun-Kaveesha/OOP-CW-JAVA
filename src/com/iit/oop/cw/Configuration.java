@@ -81,9 +81,12 @@ public class Configuration {
                 preparedStatement.executeUpdate();
                 System.out.println("Configuration ["+attribute+"] updated successfully in the DataBase.");
 
+            }catch (SQLException e){
+                System.out.println("Failed to update configuration.");
+                e.printStackTrace();
             }
         } catch (SQLException e) {
-            System.out.println("Failed to update configuration.");
+            System.out.println("Failed to connect to the database.");
             e.printStackTrace();
         }
     }
@@ -99,7 +102,7 @@ public class Configuration {
                         this.ticketReleaseRate = resultSet.getInt("ticketReleaseRate");
                         this.customerRetrievalRate = resultSet.getInt("customerRetrievalRate");
                         this.maxTicketCapacity = resultSet.getInt("maxTicketCapacity");
-                        System.out.println("Configuration loaded successfully.");
+                        System.out.println("\nConfiguration loaded successfully from the Database.");
                         System.out.println("Total Tickets: " + this.totalTickets);
                         System.out.println("Ticket Release Rate: " + this.ticketReleaseRate);
                         System.out.println("Customer Retrieval Rate: " + this.customerRetrievalRate);
@@ -107,10 +110,13 @@ public class Configuration {
                     } else {
                         System.out.println("No configuration found with id = 1.");
                     }
+                } catch (SQLException e) {
+                    System.out.println("Failed to execute the query.");
+                    e.printStackTrace();
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Failed to load configuration.");
+            System.out.println("Failed to connect to the database.");
             e.printStackTrace();
         }
     }
