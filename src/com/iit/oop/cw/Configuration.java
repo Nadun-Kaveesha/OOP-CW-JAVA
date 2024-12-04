@@ -79,7 +79,7 @@ public class Configuration {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, value);
                 preparedStatement.executeUpdate();
-                System.out.println("Configuration ["+attribute+"] updated successfully in the DataBase.");
+                System.out.println("Configuration ["+attribute+"] successfully updated in the DataBase.");
 
             }catch (SQLException e){
                 System.out.println("Failed to update configuration.");
@@ -92,32 +92,32 @@ public class Configuration {
     }
 
     //Load the configuration from the database
-    public void loadConfiguration() {
+    public  Configuration loadConfigurationFromDB() {
         try (Connection connection = DBConfig.getConnection()) {
             String query = "SELECT * FROM Configuration WHERE id = 1";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        this.totalTickets = resultSet.getInt("totalTickets");
-                        this.ticketReleaseRate = resultSet.getInt("ticketReleaseRate");
-                        this.customerRetrievalRate = resultSet.getInt("customerRetrievalRate");
-                        this.maxTicketCapacity = resultSet.getInt("maxTicketCapacity");
-                        System.out.println("\nConfiguration loaded successfully from the Database.");
-                        System.out.println("Total Tickets: " + this.totalTickets);
-                        System.out.println("Ticket Release Rate: " + this.ticketReleaseRate);
-                        System.out.println("Customer Retrieval Rate: " + this.customerRetrievalRate);
-                        System.out.println("Max Ticket Capacity: " + this.maxTicketCapacity);
+                        return new Configuration(
+                                resultSet.getInt("totalTickets"),
+                                resultSet.getInt("ticketReleaseRate"),
+                                resultSet.getInt("customerRetrievalRate"),
+                                resultSet.getInt("maxTicketCapacity")
+                        );
                     } else {
                         System.out.println("No configuration found with id = 1.");
+                        return null;
                     }
                 } catch (SQLException e) {
                     System.out.println("Failed to execute the query.");
                     e.printStackTrace();
+                    return null;
                 }
             }
         } catch (SQLException e) {
             System.out.println("Failed to connect to the database.");
             e.printStackTrace();
+            return null;
         }
     }
 

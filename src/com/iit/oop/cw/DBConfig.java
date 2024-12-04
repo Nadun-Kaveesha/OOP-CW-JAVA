@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConfig {
-    private static final String URL = "jdbc:mysql://ucraftdatabase.c1kigk6k2fhx.us-east-1.rds.amazonaws.com/configuration_java_oop";
-    private static final String USER = "admin";
-    private static final String PASSWORD = "ucraftlkadmin";
+    private static final String URL = "jdbc:mysql://localhost:3306/ticketing_system_java";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
     public static Connection getConnection() {
         Connection connection = null;
