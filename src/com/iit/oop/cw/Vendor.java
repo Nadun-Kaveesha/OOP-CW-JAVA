@@ -50,22 +50,11 @@ public class Vendor {
         return new TimerTask() {
             @Override
             public void run() {
-                if(noOfTickets > 0){
-                    TicketPool ticketPool = new TicketPool();
-                    if(ticketPool.loadConfigurationFromDB().getTotalTickets() + noOfTickets <= ticketPool.loadConfigurationFromDB().getMaxTicketCapacity()){
-                        ticketPool.addTickets(noOfTickets);
-                    } else {
-                        System.out.println("Total Tickets should not exceed the Max Ticket Capacity");
-                        this.cancel();
-
-                    }
-                } else {
-                    System.out.println("Number of tickets should be a positive integer");
-                    this.cancel();
-                }
+                Thread ticketReleaseThread = new Thread(new TicketReleaseWorker(noOfTickets));
+                ticketReleaseThread.start();
             }
         };
-    }
+    };
 
     public void startReleasingTickets(int noOfTickets) {
         Timer timer = new Timer();

@@ -40,19 +40,8 @@ public class Customer {
         return new TimerTask() {
             @Override
             public void run() {
-                if(noOfTickets > 0){
-                    TicketPool ticketPool = new TicketPool();
-                    if(ticketPool.loadConfigurationFromDB().getTotalTickets() - noOfTickets > 0){
-                        ticketPool.removeTickets(noOfTickets);
-                    } else {
-                        System.out.println("Total Tickets should not be less than 0");
-                        this.cancel();
-
-                    }
-                } else {
-                    System.out.println("Number of tickets should be a positive integer");
-                    this.cancel();
-                }
+                Thread ticketRetrieveThread = new Thread(new TicketRetrievalWorker(noOfTickets));
+                ticketRetrieveThread.start();
             }
         };
     }
