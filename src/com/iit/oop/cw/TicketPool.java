@@ -22,7 +22,7 @@ public class TicketPool extends Configuration{
             int maxTicketCapacityFromDB = this.loadConfigurationFromDB().getMaxTicketCapacity();
             if(totalTicketsFromDB + noOfTickets <= maxTicketCapacityFromDB){
                 this.setTotalTickets(totalTicketsFromDB + noOfTickets);
-                System.out.println("You have Successfully Added "+noOfTickets+" to the Store. Total is "+this.loadConfigurationFromDB().getTotalTickets());
+                System.out.println("✅ You have Successfully Added "+noOfTickets+" to the System. Total is "+this.loadConfigurationFromDB().getTotalTickets());
             }else {
                 throw new IllegalArgumentException("Total Tickets should not exceed the Max Ticket Capacity");
             }
@@ -38,7 +38,7 @@ public class TicketPool extends Configuration{
             int totalTicketsFromDB = this.loadConfigurationFromDB().getTotalTickets();
             if(totalTicketsFromDB - noOfTickets >= 0){
                 this.setTotalTickets(totalTicketsFromDB - noOfTickets);
-                System.out.println("You have Successfully bought "+noOfTickets+" From the Store. Remaining is "+this.loadConfigurationFromDB().getTotalTickets());
+                System.out.println("\n❌You have Successfully bought "+noOfTickets+" From the System. Remaining is "+this.loadConfigurationFromDB().getTotalTickets());
             }else {
                 throw new IllegalArgumentException("Total Tickets should not be less than 0");
             }

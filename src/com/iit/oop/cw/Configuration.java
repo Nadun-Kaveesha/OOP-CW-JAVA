@@ -79,8 +79,6 @@ public class Configuration {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, value);
                 preparedStatement.executeUpdate();
-                System.out.println("Configuration ["+attribute+"] successfully updated in the DataBase.");
-
             }catch (SQLException e){
                 System.out.println("Failed to update configuration.");
                 e.printStackTrace();

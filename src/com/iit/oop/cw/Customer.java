@@ -1,4 +1,6 @@
 package com.iit.oop.cw;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Customer {
     //Instance Variable initialization
@@ -34,17 +36,30 @@ public class Customer {
 
     //Methods
     //Method to Retrieve Tickets
-    public void retrieveTickets(int noOfTickets){
-        if(noOfTickets > 0){
-            TicketPool ticketPool = new TicketPool();
-            if(ticketPool.getTotalTickets() - noOfTickets > 0){
-                ticketPool.removeTickets(noOfTickets);
-            }else {
-                throw new IllegalArgumentException("Total Tickets should not be less than 0");
+    public TimerTask retrieveTickets(int noOfTickets) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                if(noOfTickets > 0){
+                    TicketPool ticketPool = new TicketPool();
+                    if(ticketPool.loadConfigurationFromDB().getTotalTickets() - noOfTickets > 0){
+                        ticketPool.removeTickets(noOfTickets);
+                    } else {
+                        System.out.println("Total Tickets should not be less than 0");
+                        this.cancel();
+
+                    }
+                } else {
+                    System.out.println("Number of tickets should be a positive integer");
+                    this.cancel();
+                }
             }
-        }else {
-            throw new IllegalArgumentException("Number of tickets should be a positive integer");
-        }
+        };
+    }
+
+    public void startRetrievingTickets(int noOfTickets) {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(retrieveTickets(noOfTickets),0,5000);
     }
 
 }

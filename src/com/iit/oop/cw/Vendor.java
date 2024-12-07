@@ -1,5 +1,8 @@
 package com.iit.oop.cw;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Vendor {
     //Instance Variable initialization
     int vendorID;
@@ -43,16 +46,29 @@ public class Vendor {
 
     //Methods
     //Method to Release Tickets
-    public void releaseTickets(int noOfTickets){
-        if(noOfTickets > 0){
-            TicketPool ticketPool = new TicketPool();
-            if(ticketPool.getTotalTickets() + noOfTickets <= ticketPool.getMaxTicketCapacity()){
-                ticketPool.addTickets(noOfTickets);
-            }else {
-                throw new IllegalArgumentException("Total Tickets should not exceed the Max Ticket Capacity");
+    public TimerTask releaseTickets(int noOfTickets) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                if(noOfTickets > 0){
+                    TicketPool ticketPool = new TicketPool();
+                    if(ticketPool.loadConfigurationFromDB().getTotalTickets() + noOfTickets <= ticketPool.loadConfigurationFromDB().getMaxTicketCapacity()){
+                        ticketPool.addTickets(noOfTickets);
+                    } else {
+                        System.out.println("Total Tickets should not exceed the Max Ticket Capacity");
+                        this.cancel();
+
+                    }
+                } else {
+                    System.out.println("Number of tickets should be a positive integer");
+                    this.cancel();
+                }
             }
-        }else {
-            throw new IllegalArgumentException("Number of tickets should be a positive integer");
-        }
+        };
+    }
+
+    public void startReleasingTickets(int noOfTickets) {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(releaseTickets(noOfTickets),0,5000);
     }
 }

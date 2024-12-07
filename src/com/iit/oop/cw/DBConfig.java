@@ -18,11 +18,11 @@ public class DBConfig {
             // Establish the connection
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
-            System.out.println("MySQL JDBC Driver not found.");
-            e.printStackTrace();
+            System.out.println("MySQL JDBC Driver not found !");
+            System.exit(0);
         } catch (SQLException e) {
-            System.out.println("Connection failed.");
-            e.printStackTrace();
+            System.out.println("Connection with the database failed !");
+            System.exit(0);
         }
         return connection;
     }
