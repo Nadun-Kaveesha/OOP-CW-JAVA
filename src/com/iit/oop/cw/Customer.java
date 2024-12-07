@@ -4,15 +4,19 @@ import java.util.TimerTask;
 
 public class Customer {
     //Instance Variable initialization
-    int customerID;
-    int retrievalInterval;
+    private final TicketPool ticketPool;
+    private  int customerID;
+    private  int retrievalInterval;
 
     //Constructor
-    public Customer(int customerID, int retrievalInterval) {
+    public Customer(TicketPool ticketPool, int customerID, int retrievalInterval) {
+        this.ticketPool = ticketPool;
         this.customerID = customerID;
         this.retrievalInterval = retrievalInterval;
     }
-    public Customer(){}
+    public Customer(TicketPool ticketPool){
+        this.ticketPool = ticketPool;
+    }
 
 
     //Getters
@@ -36,19 +40,15 @@ public class Customer {
 
     //Methods
     //Method to Retrieve Tickets
-    public TimerTask retrieveTickets(int noOfTickets) {
-        return new TimerTask() {
+    public void startRetrievingTickets(int noOfTickets) {
+        //Timer to schedule the task of retrieving tickets
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Thread ticketRetrieveThread = new Thread(new TicketRetrievalWorker(noOfTickets));
-                ticketRetrieveThread.start();
+                new TicketRetrievalWorker(noOfTickets, ticketPool).run();
             }
-        };
-    }
-
-    public void startRetrievingTickets(int noOfTickets) {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(retrieveTickets(noOfTickets),0,5000);
+        }, 0, 5000);
     }
 
 }

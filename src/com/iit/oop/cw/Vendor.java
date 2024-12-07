@@ -5,17 +5,21 @@ import java.util.TimerTask;
 
 public class Vendor {
     //Instance Variable initialization
+    private final TicketPool ticketPool;
     int vendorID;
     int ticketsPerReleaseRate;
     int releaseInterval;
 
     //Constructor
-    public Vendor(int vendorID, int ticketsPerReleaseRate, int releaseInterval) {
+    public Vendor(TicketPool ticketPool, int vendorID, int ticketsPerReleaseRate, int releaseInterval) {
+        this.ticketPool = ticketPool;
         this.vendorID = vendorID;
         this.ticketsPerReleaseRate = ticketsPerReleaseRate;
         this.releaseInterval = releaseInterval;
     }
-    public Vendor(){}
+    public Vendor(TicketPool ticketPool){
+        this.ticketPool = ticketPool;
+    }
 
 
     //Getters
@@ -46,18 +50,13 @@ public class Vendor {
 
     //Methods
     //Method to Release Tickets
-    public TimerTask releaseTickets(int noOfTickets) {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                Thread ticketReleaseThread = new Thread(new TicketReleaseWorker(noOfTickets));
-                ticketReleaseThread.start();
-            }
-        };
-    };
-
     public void startReleasingTickets(int noOfTickets) {
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(releaseTickets(noOfTickets),0,5000);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                new TicketReleaseWorker(noOfTickets, ticketPool).run();
+            }
+        }, 0, 5000);
     }
 }

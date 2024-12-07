@@ -73,7 +73,7 @@ public class Configuration {
     //Methods
 
     //Save the configuration to the database
-    public void saveConfiguration(String attribute, int value) {
+    public synchronized void saveConfiguration(String attribute, int value) {
         try (Connection connection = DBConfig.getConnection()) {
             String query = "UPDATE Configuration SET " + attribute + " = ? WHERE id = 1";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -90,7 +90,7 @@ public class Configuration {
     }
 
     //Load the configuration from the database
-    public  Configuration loadConfigurationFromDB() {
+    public  synchronized Configuration loadConfigurationFromDB() {
         try (Connection connection = DBConfig.getConnection()) {
             String query = "SELECT * FROM Configuration WHERE id = 1";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {

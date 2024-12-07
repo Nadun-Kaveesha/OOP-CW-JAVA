@@ -6,9 +6,10 @@ public class App {
     // Centralized object instantiation
     private static Scanner scanner = new Scanner(System.in);
     private static Configuration config = new Configuration();
-    private static Vendor vendor = new Vendor();
-    private static Customer customer = new Customer();
     private static TicketPool ticketPool = new TicketPool();
+    private static Vendor vendor = new Vendor(ticketPool);
+    private static Customer customer = new Customer(ticketPool);
+
 
     public static void main(String[] args) {
         setConfiguration();

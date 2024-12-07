@@ -1,21 +1,19 @@
 package com.iit.oop.cw;
 
 public class TicketReleaseWorker implements Runnable {
+    //Instance Variable initialization
     private final int noOfTickets;
+    private final TicketPool ticketPool;
 
-    public TicketReleaseWorker(int noOfTickets) {
+    //Constructor
+    public TicketReleaseWorker(int noOfTickets, TicketPool ticketPool) {
         this.noOfTickets = noOfTickets;
+        this.ticketPool = ticketPool;
     }
 
+    //Method to Release Tickets by overriding the run method
     @Override
     public void run() {
-        // Logic to retrieve tickets
-        TicketPool ticketPool = new TicketPool();
-        if (ticketPool.loadConfigurationFromDB().getTotalTickets() + noOfTickets <= ticketPool.loadConfigurationFromDB().getMaxTicketCapacity()) {
-            ticketPool.addTickets(noOfTickets);
-            System.out.println("Released " + noOfTickets + " tickets.");
-        } else {
-            System.out.println("Total Tickets should not exceed the Max Ticket Capacity");
-        }
+        ticketPool.addTickets(noOfTickets);
     }
 }

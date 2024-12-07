@@ -1,24 +1,19 @@
 package com.iit.oop.cw;
 
-public class TicketRetrievalWorker implements Runnable{
+public class TicketRetrievalWorker implements Runnable {
+    //Instance Variable initialization
     private final int noOfTickets;
+    private final TicketPool ticketPool;
 
-    public TicketRetrievalWorker(int noOfTickets) {
+    //Constructor
+    public TicketRetrievalWorker(int noOfTickets, TicketPool ticketPool) {
         this.noOfTickets = noOfTickets;
+        this.ticketPool = ticketPool;
     }
 
     @Override
+    //Method to Retrieve Tickets by overriding the run method
     public void run() {
-        //Logic to Release the Tickets
-        TicketPool ticketPool = new TicketPool();
-        if(noOfTickets > 0){
-            if(ticketPool.loadConfigurationFromDB().getTotalTickets() - noOfTickets > 0){
-                ticketPool.removeTickets(noOfTickets);
-            } else {
-                System.out.println("Total Tickets should not be less than 0");
-            }
-        } else {
-            System.out.println("Number of tickets should be a positive integer");
-        }
+        ticketPool.removeTickets(noOfTickets);
     }
 }
