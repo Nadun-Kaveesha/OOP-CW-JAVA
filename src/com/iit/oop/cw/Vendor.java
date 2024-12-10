@@ -50,13 +50,13 @@ public class Vendor {
 
     //Methods
     //Method to Release Tickets
-    public void startReleasingTickets(int noOfTickets) {
+    public synchronized void startReleasingTickets(int noOfTickets) {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 new TicketReleaseWorker(noOfTickets, ticketPool).run();
             }
-        }, 0, 5000);
+        }, 0, 6000);
     }
 }

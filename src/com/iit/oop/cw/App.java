@@ -13,8 +13,8 @@ public class App {
 
     public static void main(String[] args) {
         setConfiguration();
-        int userChoice = showMenu();
-        mainFunction(userChoice);
+        int globalUserChoice = showGlobalMenu();
+        mainFunction(globalUserChoice);
     }
 
     // Function to set up the configuration
@@ -85,20 +85,18 @@ public class App {
     }
 
     // Function to show the menu and get the user choice
-    public static int showMenu() {
+    public static int showGlobalMenu() {
         System.out.println("\n" + " ".repeat(40) + "*".repeat(5) + " Main Menu " + "*".repeat(5));
-        int userChoice;
+        int globalUserChoice;
         while (true) {
             try {
-                System.out.println("1. Press [1] to Buy Tickets");
-                System.out.println("2. Press [2] to Sell Tickets");
-                System.out.println("3. Press [3] to Start Retrieving Tickets");
-                System.out.println("4. Press [4] to Start Releasing Tickets");
-                System.out.println("5. Press [5] to Start Both Releasing and Retrieving Tickets");
+                System.out.println("1. Press [1] If You are a Customer");
+                System.out.println("2. Press [2] If You are a Vendor");
+                System.out.println("3. Press [3] If you are a Admin");
                 System.out.print("\nPlease Enter Your Choice : ");
                 int passedValue = Integer.parseInt(scanner.nextLine());
-                if (passedValue <= 5 && passedValue > 0) {
-                    userChoice = passedValue;
+                if (passedValue <= 3 && passedValue > 0) {
+                    globalUserChoice = passedValue;
                     break;
                 } else {
                     System.out.println("Invalid choice. Try again !\n");
@@ -109,26 +107,70 @@ public class App {
                 delay(1000);
             }
         }
-        return userChoice;
+        return globalUserChoice;
     }
 
-    // Main Functionality to run the CLI
-    public static void mainFunction(int userChoice) {
-        if (userChoice == 1) {
-            System.out.print("Please Enter the amount of tickets you want to Buy: ");
-            ticketPool.removeTickets(scanner.nextInt());
-        } else if (userChoice == 2) {
-            System.out.print("Please Enter the amount of tickets you want to Sell: ");
-            ticketPool.addTickets(scanner.nextInt());
-        } else if (userChoice == 3) {
-            customer.startRetrievingTickets(config.getCustomerRetrievalRate());
-        } else if (userChoice == 4) {
-            vendor.startReleasingTickets(config.getTicketReleaseRate());
-        } else if (userChoice == 5) {
-            vendor.startReleasingTickets(config.getTicketReleaseRate());
-            customer.startRetrievingTickets(config.getCustomerRetrievalRate());
+    // Showing the Personal Menu
+    public static void mainFunction(int globalUserChoice) {
+        int personalUserChoice = 0;
+
+        //If the user is a customer
+        if (globalUserChoice == 1) {
+            System.out.print("Press [1] to Buy Tickets : ");
+            int passedValue = Integer.parseInt(scanner.nextLine());
+            if(passedValue ==1){
+                System.out.print("Please Enter the amount of tickets you want to Buy: ");
+                ticketPool.removeTickets(scanner.nextInt());
+            }
+
+        //If the User is a Vendor
+        } else if (globalUserChoice == 2) {
+            System.out.print("Press [1] to Add Tickets to the System : ");
+            int passedValue = Integer.parseInt(scanner.nextLine());
+            if(passedValue ==1){
+                System.out.print("Please Enter the amount of tickets you want to Buy: ");
+                ticketPool.removeTickets(scanner.nextInt());
+            }
+
+        //If the user is an Admin
+        } else if (globalUserChoice == 3) {
+            System.out.print("Press [1] to Start Releasing Tickets : ");
+            System.out.print("Press [2] to Start Retrieving Ticket : ");
+            System.out.print("Press [3] to Start Both : ");
+            System.out.print("Press [4] to Reconfigure the Releasing Rate : ");
+            System.out.print("Press [5] to Reconfigure the Retrieving Rate : ");
+            int passedValue = Integer.parseInt(scanner.nextLine());
+            if(passedValue ==1){
+
+            } else if (passedValue == 2) {
+
+            } else if (passedValue == 3) {
+
+            } else if (passedValue == 4) {
+
+            } else if (passedValue == 5) {
+
+            }
         }
     }
+
+    //Main Menu
+//    public static void mainMenu(int userChoice) {
+//        if (userChoice == 1) {
+//            System.out.print("Please Enter the amount of tickets you want to Buy: ");
+//            ticketPool.removeTickets(scanner.nextInt());
+//        } else if (userChoice == 2) {
+//            System.out.print("Please Enter the amount of tickets you want to Sell: ");
+//            ticketPool.addTickets(scanner.nextInt());
+//        } else if (userChoice == 3) {
+//            customer.startRetrievingTickets(config.getCustomerRetrievalRate());
+//        } else if (userChoice == 4) {
+//            vendor.startReleasingTickets(config.getTicketReleaseRate());
+//        } else if (userChoice == 5) {
+//            vendor.startReleasingTickets(config.getTicketReleaseRate());
+//            customer.startRetrievingTickets(config.getCustomerRetrievalRate());
+//        }
+//    }
 
     // Function to add delay in between
     public static void delay(int milliSeconds) {

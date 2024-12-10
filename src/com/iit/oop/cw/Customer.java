@@ -40,7 +40,7 @@ public class Customer {
 
     //Methods
     //Method to Retrieve Tickets
-    public void startRetrievingTickets(int noOfTickets) {
+    public synchronized void startRetrievingTickets(int noOfTickets) {
         //Timer to schedule the task of retrieving tickets
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {

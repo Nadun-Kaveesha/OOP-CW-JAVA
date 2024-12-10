@@ -26,17 +26,4 @@ public class DBConfig {
         }
         return connection;
     }
-
-    public static void main(String[] args) {
-        // Test the connection
-        Connection connection = DBConfig.getConnection();
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Connection closed successfully.");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
