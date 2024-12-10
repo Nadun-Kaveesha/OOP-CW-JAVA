@@ -1,28 +1,27 @@
 package com.iit.oop.cw;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Vendor {
-    //Instance Variable initialization
     private final TicketPool ticketPool;
-    int vendorID;
-    int ticketsPerReleaseRate;
-    int releaseInterval;
+    private int vendorID;
+    private int ticketsPerReleaseRate;
+    private int releaseInterval;
+    private final Lock lock = new ReentrantLock();
+    private boolean running = true;
 
-    //Constructor
     public Vendor(TicketPool ticketPool, int vendorID, int ticketsPerReleaseRate, int releaseInterval) {
         this.ticketPool = ticketPool;
         this.vendorID = vendorID;
         this.ticketsPerReleaseRate = ticketsPerReleaseRate;
-        this.releaseInterval = releaseInterval;
+        this.releaseInterval = 60000;
     }
-    public Vendor(TicketPool ticketPool){
+
+    public Vendor(TicketPool ticketPool) {
         this.ticketPool = ticketPool;
     }
 
-
-    //Getters
     public int getVendorID() {
         return vendorID;
     }
@@ -35,7 +34,6 @@ public class Vendor {
         return releaseInterval;
     }
 
-    //Setters
     public void setVendorID(int vendorID) {
         this.vendorID = vendorID;
     }
@@ -48,15 +46,26 @@ public class Vendor {
         this.releaseInterval = releaseInterval;
     }
 
-    //Methods
-    //Method to Release Tickets
-    public synchronized void startReleasingTickets(int noOfTickets) {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                new TicketReleaseWorker(noOfTickets, ticketPool).run();
+    public void startReleasingTickets(int noOfTickets,int releaseInterval){
+        new Thread(() -> {
+            while (running) {
+                lock.lock();
+                try {
+                    new TicketReleaseWorker(noOfTickets, ticketPool).run();
+                    Thread.sleep(releaseInterval);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    lock.unlock();
+                }
             }
-        }, 0, 6000);
+        }).start();
+    }
+
+    public void stopReleasingTickets() {
+        running = false;
+    }
+    public boolean isRunning() {
+        return running;
     }
 }

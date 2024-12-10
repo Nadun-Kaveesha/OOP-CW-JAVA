@@ -1,25 +1,25 @@
 package com.iit.oop.cw;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Customer {
-    //Instance Variable initialization
     private final TicketPool ticketPool;
-    private  int customerID;
-    private  int retrievalInterval;
+    private int customerID;
+    private int retrievalInterval;
+    private final Lock lock = new ReentrantLock();
+    private boolean running = true;
 
-    //Constructor
     public Customer(TicketPool ticketPool, int customerID, int retrievalInterval) {
         this.ticketPool = ticketPool;
         this.customerID = customerID;
         this.retrievalInterval = retrievalInterval;
     }
-    public Customer(TicketPool ticketPool){
+
+    public Customer(TicketPool ticketPool) {
         this.ticketPool = ticketPool;
     }
 
-
-    //Getters
     public int getCustomerID() {
         return customerID;
     }
@@ -28,7 +28,6 @@ public class Customer {
         return retrievalInterval;
     }
 
-    //Setters
     public void setCustomerID(int customerID) {
         this.customerID = customerID;
     }
@@ -37,18 +36,26 @@ public class Customer {
         this.retrievalInterval = retrievalInterval;
     }
 
-
-    //Methods
-    //Method to Retrieve Tickets
-    public synchronized void startRetrievingTickets(int noOfTickets) {
-        //Timer to schedule the task of retrieving tickets
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                new TicketRetrievalWorker(noOfTickets, ticketPool).run();
+    public void startRetrievingTickets(int noOfTickets, int retrievalInterval) {
+        new Thread(() -> {
+            while (running) {
+                lock.lock();
+                try {
+                    new TicketRetrievalWorker(noOfTickets, ticketPool).run();
+                    Thread.sleep(retrievalInterval);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    lock.unlock();
+                }
             }
-        }, 0, 5000);
+        }).start();
     }
 
+    public void stopRetrievingTickets() {
+        running = false;
+    }
+    public boolean isRunning() {
+        return running;
+    }
 }

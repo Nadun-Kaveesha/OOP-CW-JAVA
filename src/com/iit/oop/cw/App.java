@@ -10,11 +10,16 @@ public class App {
     private static Vendor vendor = new Vendor(ticketPool);
     private static Customer customer = new Customer(ticketPool);
 
-
     public static void main(String[] args) {
         setConfiguration();
-        int globalUserChoice = showGlobalMenu();
-        mainFunction(globalUserChoice);
+        while (true) {
+            int globalUserChoice = showGlobalMenu();
+            if (globalUserChoice == 0) {
+                System.out.println("Exiting the program. Goodbye!");
+                break;
+            }
+            mainFunction(globalUserChoice);
+        }
     }
 
     // Function to set up the configuration
@@ -92,18 +97,19 @@ public class App {
             try {
                 System.out.println("1. Press [1] If You are a Customer");
                 System.out.println("2. Press [2] If You are a Vendor");
-                System.out.println("3. Press [3] If you are a Admin");
-                System.out.print("\nPlease Enter Your Choice : ");
+                System.out.println("3. Press [3] If you are an Admin");
+                System.out.println("0. Press [0] to Exit");
+                System.out.print("\nPlease Enter Your Choice: ");
                 int passedValue = Integer.parseInt(scanner.nextLine());
-                if (passedValue <= 3 && passedValue > 0) {
+                if (passedValue <= 3 && passedValue >= 0) {
                     globalUserChoice = passedValue;
                     break;
                 } else {
-                    System.out.println("Invalid choice. Try again !\n");
+                    System.out.println("Invalid choice. Try again!\n");
                     delay(1000);
                 }
             } catch (NumberFormatException q) {
-                System.out.println("Invalid input format. Try again !\n");
+                System.out.println("Invalid input format. Try again!\n");
                 delay(1000);
             }
         }
@@ -112,65 +118,211 @@ public class App {
 
     // Showing the Personal Menu
     public static void mainFunction(int globalUserChoice) {
-        int personalUserChoice = 0;
-
-        //If the user is a customer
         if (globalUserChoice == 1) {
-            System.out.print("Press [1] to Buy Tickets : ");
-            int passedValue = Integer.parseInt(scanner.nextLine());
-            if(passedValue ==1){
-                System.out.print("Please Enter the amount of tickets you want to Buy: ");
-                ticketPool.removeTickets(scanner.nextInt());
+            while (true) {
+                try {
+                    System.out.print("Press [1] to Buy Tickets: ");
+                    int passedValue = Integer.parseInt(scanner.nextLine());
+                    if (passedValue == 1) {
+                        System.out.print("Please Enter the amount of tickets you want to Buy: ");
+                        int noOfTickets = Integer.parseInt(scanner.nextLine());
+                        if (noOfTickets > 0) {
+                            ticketPool.removeTickets(noOfTickets);
+                            break;
+                        } else {
+                            System.out.println("Error: Number of tickets must be greater than 0.");
+                        }
+                    } else {
+                        System.out.println("Invalid choice. Try again!");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid positive integer.");
+                }
             }
-
-        //If the User is a Vendor
         } else if (globalUserChoice == 2) {
-            System.out.print("Press [1] to Add Tickets to the System : ");
-            int passedValue = Integer.parseInt(scanner.nextLine());
-            if(passedValue ==1){
-                System.out.print("Please Enter the amount of tickets you want to Buy: ");
-                ticketPool.removeTickets(scanner.nextInt());
+            while (true) {
+                try {
+                    System.out.print("Press [1] to Add Tickets to the System: ");
+                    int passedValue = Integer.parseInt(scanner.nextLine());
+                    if (passedValue == 1) {
+                        System.out.print("Please Enter the amount of tickets you want to Add: ");
+                        int noOfTickets = Integer.parseInt(scanner.nextLine());
+                        if (noOfTickets > 0) {
+                            ticketPool.addTickets(noOfTickets);
+                            break;
+                        } else {
+                            System.out.println("Error: Number of tickets must be greater than 0.");
+                        }
+                    } else {
+                        System.out.println("Invalid choice. Try again!");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid positive integer.");
+                }
             }
-
-        //If the user is an Admin
         } else if (globalUserChoice == 3) {
-            System.out.print("Press [1] to Start Releasing Tickets : ");
-            System.out.print("Press [2] to Start Retrieving Ticket : ");
-            System.out.print("Press [3] to Start Both : ");
-            System.out.print("Press [4] to Reconfigure the Releasing Rate : ");
-            System.out.print("Press [5] to Reconfigure the Retrieving Rate : ");
-            int passedValue = Integer.parseInt(scanner.nextLine());
-            if(passedValue ==1){
+            while (true) {
+                try {
+                    System.out.println("\nPress [1] to Start Releasing Tickets");
+                    System.out.println("Press [2] to Start Retrieving Tickets");
+                    System.out.println("Press [3] to Start Both");
+                    System.out.println("Press [4] to Reconfigure the Releasing Rate");
+                    System.out.println("Press [5] to Reconfigure the Retrieving Rate");
+                    System.out.println("Press [6] to Show Status");
+                    System.out.println("Press [7] to Stop a Running process");
+                    System.out.print("Please Enter Your Choice: ");
+                    int passedValue = Integer.parseInt(scanner.nextLine());
 
-            } else if (passedValue == 2) {
+                    if (passedValue == 1) {
+                        System.out.print("Enter the release interval in milliseconds: ");
+                        int releaseInterval = Integer.parseInt(scanner.nextLine());
+                        new Thread(() -> vendor.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
+                        System.out.println("Process started successfully in the Background. Check the log files for more information.");
+                        return;
 
-            } else if (passedValue == 3) {
+                    } else if (passedValue == 2) {
+                        System.out.print("Enter the retrieval interval in milliseconds: ");
+                        int retrievalInterval = Integer.parseInt(scanner.nextLine());
+                        new Thread(() -> customer.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
+                        System.out.println("Process started successfully in the Background. Check the log files for more information.");
+                        return;
 
-            } else if (passedValue == 4) {
+                    } else if (passedValue == 3) {
+                        System.out.print("Enter the release interval in milliseconds: ");
+                        int releaseInterval = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Enter the retrieval interval in milliseconds: ");
+                        int retrievalInterval = Integer.parseInt(scanner.nextLine());
+                        new Thread(() -> vendor.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
+                        new Thread(() -> customer.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
+                        System.out.println("Both processes started successfully in the Background. Check the log files for more information.");
+                        return;
 
-            } else if (passedValue == 5) {
+                    } else if (passedValue == 4) {
+                        while (true) {
+                            try {
+                                System.out.print("Enter the new ticket release rate: ");
+                                int newRate = Integer.parseInt(scanner.nextLine());
+                                if (newRate > 0) {
+                                    config.setTicketReleaseRate(newRate);
+                                    System.out.println("Ticket release rate updated successfully to " + newRate);
+                                    break;
+                                } else {
+                                    System.out.println("Error: Ticket release rate must be greater than 0.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid positive integer.");
+                            }
+                        }
+                        break;
 
+                    } else if (passedValue == 5) {
+                        while (true) {
+                            try {
+                                System.out.print("Enter the new customer retrieval rate: ");
+                                int newRate = Integer.parseInt(scanner.nextLine());
+                                if (newRate > 0) {
+                                    config.setCustomerRetrievalRate(newRate);
+                                    System.out.println("Customer retrieval rate has been updated to " + newRate);
+                                    break;
+                                } else {
+                                    System.out.println("Error: Customer retrieval rate must be greater than 0.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid positive integer.");
+                            }
+                        }
+                        break;
+
+                    } else if (passedValue == 6) {
+                        showStatus();
+                        return;
+
+                    } else if (passedValue == 7) {
+                        stopProcess();
+                        return;
+                    } else {
+                        System.out.println("Invalid choice. Try again!");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid positive integer.");
+                }
             }
         }
     }
 
-    //Main Menu
-//    public static void mainMenu(int userChoice) {
-//        if (userChoice == 1) {
-//            System.out.print("Please Enter the amount of tickets you want to Buy: ");
-//            ticketPool.removeTickets(scanner.nextInt());
-//        } else if (userChoice == 2) {
-//            System.out.print("Please Enter the amount of tickets you want to Sell: ");
-//            ticketPool.addTickets(scanner.nextInt());
-//        } else if (userChoice == 3) {
-//            customer.startRetrievingTickets(config.getCustomerRetrievalRate());
-//        } else if (userChoice == 4) {
-//            vendor.startReleasingTickets(config.getTicketReleaseRate());
-//        } else if (userChoice == 5) {
-//            vendor.startReleasingTickets(config.getTicketReleaseRate());
-//            customer.startRetrievingTickets(config.getCustomerRetrievalRate());
-//        }
-//    }
+
+    // Function to stop the process
+    public static void stopProcess() {
+        while (true) {
+            try {
+                System.out.println("\nPress [1] to Stop Releasing Tickets");
+                System.out.println("Press [2] to Stop Retrieving Tickets");
+                System.out.println("Press [3] to Stop Both");
+                System.out.print("Please Enter Your Choice: ");
+                int passedValue = Integer.parseInt(scanner.nextLine());
+
+                if (passedValue == 1) {
+                    if (vendor.isRunning()) {
+                        vendor.stopReleasingTickets();
+                        System.out.println("Releasing tickets process stopped.");
+                    } else {
+                        System.out.println("No releasing process is running.");
+                    }
+                    break;
+                } else if (passedValue == 2) {
+                    if (customer.isRunning()) {
+                        customer.stopRetrievingTickets();
+                        System.out.println("Retrieving tickets process stopped.");
+                    } else {
+                        System.out.println("No retrieving process is running.");
+                    }
+                    break;
+                } else if (passedValue == 3) {
+                    boolean anyProcessRunning = false;
+                    if (vendor.isRunning()) {
+                        vendor.stopReleasingTickets();
+                        anyProcessRunning = true;
+                        System.out.println("Releasing tickets process stopped.");
+                    }
+                    if (customer.isRunning()) {
+                        customer.stopRetrievingTickets();
+                        anyProcessRunning = true;
+                        System.out.println("Retrieving tickets process stopped.");
+                    }
+                    if (!anyProcessRunning) {
+                        System.out.println("No process is running.");
+                    }
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Try again!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid positive integer.");
+            }
+        }
+    }
+
+    // Function to show the status
+    public static void showStatus() {
+        Thread statusThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                Configuration currentConfig = config.loadConfigurationFromDB();
+                if (currentConfig != null) {
+                    System.out.println("Total Tickets: " + currentConfig.getTotalTickets());
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        statusThread.start();
+
+        // Wait for any key press to abort the status display
+        scanner.nextLine();
+        statusThread.interrupt();
+    }
 
     // Function to add delay in between
     public static void delay(int milliSeconds) {

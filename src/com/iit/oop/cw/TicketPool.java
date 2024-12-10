@@ -1,32 +1,56 @@
 package com.iit.oop.cw;
 
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.ConsoleHandler;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TicketPool extends Configuration{
-    //Instance Variable initialization
+public class TicketPool extends Configuration {
     private Lock ticketLock;
+    private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
 
-    //Constructor
+    static {
+        try {
+            // Remove the default console handler
+            Logger rootLogger = Logger.getLogger("");
+            ConsoleHandler consoleHandler = null;
+            for (var handler : rootLogger.getHandlers()) {
+                if (handler instanceof ConsoleHandler) {
+                    consoleHandler = (ConsoleHandler) handler;
+                    break;
+                }
+            }
+            if (consoleHandler != null) {
+                rootLogger.removeHandler(consoleHandler);
+            }
+
+            // Add file handler
+            FileHandler fileHandler = new FileHandler("src/com/iit/oop/cw/log.txt", true);
+            fileHandler.setFormatter(new SimpleFormatter());
+            logger.addHandler(fileHandler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public TicketPool(int totalTickets, int ticketReleaseRate, int customerRetrievalRate, int maxTicketCapacity) {
         super(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         ticketLock = new ReentrantLock();
     }
-    public TicketPool(){
+
+    public TicketPool() {
         ticketLock = new ReentrantLock();
     }
 
-
-
-    //Methods
-    //Method to Add Tickets
     public void addTickets(int noOfTickets) {
         if (noOfTickets <= 0) {
             throw new IllegalArgumentException("Number of tickets should be a positive integer");
         }
         ticketLock.lock();
         try {
-            // Load configuration once
             Configuration currentConfig = this.loadConfigurationFromDB();
             int totalTicketsFromDB = currentConfig.getTotalTickets();
             int maxTicketCapacityFromDB = currentConfig.getMaxTicketCapacity();
@@ -34,8 +58,7 @@ public class TicketPool extends Configuration{
             if (totalTicketsFromDB + noOfTickets <= maxTicketCapacityFromDB) {
                 int newTotal = totalTicketsFromDB + noOfTickets;
                 this.setTotalTickets(newTotal);
-                System.out.println("✅ You have Successfully Added " + noOfTickets +
-                        " to the System. Total is " + newTotal);
+                logger.info("✅ You have Successfully Added " + noOfTickets + " to the System. Total is " + newTotal);
             } else {
                 throw new IllegalArgumentException("Total Tickets should not exceed the Max Ticket Capacity");
             }
@@ -44,8 +67,6 @@ public class TicketPool extends Configuration{
         }
     }
 
-
-    //Method to Remove Tickets
     public void removeTickets(int noOfTickets) {
         if (noOfTickets <= 0) {
             throw new IllegalArgumentException("Number of tickets should be a positive integer");
@@ -53,15 +74,13 @@ public class TicketPool extends Configuration{
 
         ticketLock.lock();
         try {
-            // Load configuration once
             Configuration currentConfig = this.loadConfigurationFromDB();
             int totalTicketsFromDB = currentConfig.getTotalTickets();
 
             if (totalTicketsFromDB - noOfTickets >= 0) {
                 int newTotal = totalTicketsFromDB - noOfTickets;
                 this.setTotalTickets(newTotal);
-                System.out.println("❌You have Successfully bought " + noOfTickets +
-                        " From the System. Remaining is " + newTotal);
+                logger.info("❌ You have Successfully bought " + noOfTickets + " From the System. Remaining is " + newTotal);
             } else {
                 throw new IllegalArgumentException("Total Tickets should not be less than 0");
             }
