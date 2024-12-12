@@ -36,15 +36,18 @@ public class TicketPool extends Configuration {
         }
     }
 
+    // Constructor with parameters
     public TicketPool(int totalTickets, int ticketReleaseRate, int customerRetrievalRate, int maxTicketCapacity) {
         super(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         ticketLock = new ReentrantLock();
     }
 
+    // Default constructor
     public TicketPool() {
         ticketLock = new ReentrantLock();
     }
 
+    // Method to add tickets to the pool
     public void addTickets(int noOfTickets) {
         if (noOfTickets <= 0) {
             throw new IllegalArgumentException("Number of tickets should be a positive integer");
@@ -70,6 +73,7 @@ public class TicketPool extends Configuration {
         }
     }
 
+    // Method to remove tickets from the pool
     public void removeTickets(int noOfTickets) {
         if (noOfTickets <= 0) {
             throw new IllegalArgumentException("Number of tickets should be a positive integer");
@@ -95,14 +99,15 @@ public class TicketPool extends Configuration {
         }
     }
 
+    // Method to check if tickets are sold out
     public boolean isSoldOut() {
         Configuration currentConfig = this.loadConfigurationFromDB();
         return currentConfig.getTotalTickets() == 0;
     }
 
+    // Method to check if max capacity is reached
     public boolean isMaxCapacityReached() {
         Configuration currentConfig = this.loadConfigurationFromDB();
         return currentConfig.getTotalTickets() >= currentConfig.getMaxTicketCapacity();
     }
-
 }
