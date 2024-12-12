@@ -1,19 +1,33 @@
 package com.iit.oop.cw;
 
 public class TicketReleaseWorker implements Runnable {
-    //Instance Variable initialization
     private final int noOfTickets;
     private final TicketPool ticketPool;
+    private final int releaseInterval;
+    private volatile boolean running = true;
 
-    //Constructor
-    public TicketReleaseWorker(int noOfTickets, TicketPool ticketPool) {
+    public TicketReleaseWorker(int noOfTickets, TicketPool ticketPool, int releaseInterval) {
         this.noOfTickets = noOfTickets;
         this.ticketPool = ticketPool;
+        this.releaseInterval = releaseInterval;
     }
 
-    //Method to Release Tickets by overriding the run method
     @Override
     public void run() {
-        ticketPool.addTickets(noOfTickets);
+        while (running) {
+            ticketPool.addTickets(noOfTickets);
+            if (ticketPool.isMaxCapacityReached()) {
+                stop();
+            }
+            try {
+                Thread.sleep(releaseInterval); // Use the passed release interval
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    public void stop() {
+        running = false;
     }
 }

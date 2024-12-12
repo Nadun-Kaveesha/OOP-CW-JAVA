@@ -10,6 +10,7 @@ public class Vendor {
     private int releaseInterval;
     private final Lock lock = new ReentrantLock();
     private boolean running = true;
+    private Thread releaseThread;
 
     public Vendor(TicketPool ticketPool, int vendorID, int ticketsPerReleaseRate, int releaseInterval) {
         this.ticketPool = ticketPool;
@@ -46,12 +47,17 @@ public class Vendor {
         this.releaseInterval = releaseInterval;
     }
 
-    public void startReleasingTickets(int noOfTickets,int releaseInterval){
-        new Thread(() -> {
+    public void startReleasingTickets(int noOfTickets, int releaseInterval) {
+        releaseThread = new Thread(() -> {
             while (running) {
                 lock.lock();
                 try {
-                    new TicketReleaseWorker(noOfTickets, ticketPool).run();
+                    TicketReleaseWorker worker = new TicketReleaseWorker(noOfTickets, ticketPool, releaseInterval);
+                    worker.run();
+                    if (ticketPool.isMaxCapacityReached()) {
+                        worker.stop();
+                        running = false;
+                    }
                     Thread.sleep(releaseInterval);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -59,12 +65,17 @@ public class Vendor {
                     lock.unlock();
                 }
             }
-        }).start();
+        });
+        releaseThread.start();
     }
 
     public void stopReleasingTickets() {
         running = false;
+        if (releaseThread != null) {
+            releaseThread.interrupt();
+        }
     }
+
     public boolean isRunning() {
         return running;
     }

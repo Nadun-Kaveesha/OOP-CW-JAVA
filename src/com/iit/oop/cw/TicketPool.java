@@ -59,6 +59,9 @@ public class TicketPool extends Configuration {
                 int newTotal = totalTicketsFromDB + noOfTickets;
                 this.setTotalTickets(newTotal);
                 logger.info("✅ You have Successfully Added " + noOfTickets + " to the System. Total is " + newTotal);
+                if (newTotal >= maxTicketCapacityFromDB) {
+                    logger.info("💯 All the tickets are released.");
+                }
             } else {
                 throw new IllegalArgumentException("Total Tickets should not exceed the Max Ticket Capacity");
             }
@@ -81,6 +84,9 @@ public class TicketPool extends Configuration {
                 int newTotal = totalTicketsFromDB - noOfTickets;
                 this.setTotalTickets(newTotal);
                 logger.info("❌ You have Successfully bought " + noOfTickets + " From the System. Remaining is " + newTotal);
+                if (newTotal == 0) {
+                    logger.info("💯 All the tickets have been sold out.");
+                }
             } else {
                 throw new IllegalArgumentException("Total Tickets should not be less than 0");
             }
@@ -88,4 +94,15 @@ public class TicketPool extends Configuration {
             ticketLock.unlock();
         }
     }
+
+    public boolean isSoldOut() {
+        Configuration currentConfig = this.loadConfigurationFromDB();
+        return currentConfig.getTotalTickets() == 0;
+    }
+
+    public boolean isMaxCapacityReached() {
+        Configuration currentConfig = this.loadConfigurationFromDB();
+        return currentConfig.getTotalTickets() >= currentConfig.getMaxTicketCapacity();
+    }
+
 }

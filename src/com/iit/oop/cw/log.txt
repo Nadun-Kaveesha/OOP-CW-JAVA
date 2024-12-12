@@ -1,0 +1,46 @@
+Dec 12, 2024 8:17:30 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 110
+Dec 12, 2024 8:17:33 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 120
+Dec 12, 2024 8:17:36 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 130
+Dec 12, 2024 8:17:39 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 140
+Dec 12, 2024 8:17:42 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 150
+Dec 12, 2024 8:17:42 AM com.iit.oop.cw.TicketPool addTickets
+INFO: All the tickets are released.
+Dec 12, 2024 8:21:08 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 110
+Dec 12, 2024 8:21:13 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 120
+Dec 12, 2024 8:21:18 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 130
+Dec 12, 2024 8:21:23 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 140
+Dec 12, 2024 8:21:28 AM com.iit.oop.cw.TicketPool addTickets
+INFO: ✅ You have Successfully Added 10 to the System. Total is 150
+Dec 12, 2024 8:21:28 AM com.iit.oop.cw.TicketPool addTickets
+INFO: 💯All the tickets are released.
+Dec 12, 2024 8:29:45 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 90
+Dec 12, 2024 8:29:48 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 80
+Dec 12, 2024 8:29:50 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 70
+Dec 12, 2024 8:29:52 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 60
+Dec 12, 2024 8:29:54 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 50
+Dec 12, 2024 8:29:56 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 40
+Dec 12, 2024 8:29:58 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 30
+Dec 12, 2024 8:30:00 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 20
+Dec 12, 2024 8:30:02 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 10
+Dec 12, 2024 8:30:04 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: ❌ You have Successfully bought 10 From the System. Remaining is 0
+Dec 12, 2024 8:30:04 AM com.iit.oop.cw.TicketPool removeTickets
+INFO: 💯 All the tickets have been sold out.

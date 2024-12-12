@@ -9,6 +9,7 @@ public class Customer {
     private int retrievalInterval;
     private final Lock lock = new ReentrantLock();
     private boolean running = true;
+    private Thread retrievalThread;
 
     public Customer(TicketPool ticketPool, int customerID, int retrievalInterval) {
         this.ticketPool = ticketPool;
@@ -37,11 +38,16 @@ public class Customer {
     }
 
     public void startRetrievingTickets(int noOfTickets, int retrievalInterval) {
-        new Thread(() -> {
+        retrievalThread = new Thread(() -> {
             while (running) {
                 lock.lock();
                 try {
-                    new TicketRetrievalWorker(noOfTickets, ticketPool).run();
+                    TicketRetrievalWorker worker = new TicketRetrievalWorker(noOfTickets, ticketPool, retrievalInterval);
+                    worker.run();
+                    if (ticketPool.isSoldOut()) {
+                        worker.stop();
+                        running = false;
+                    }
                     Thread.sleep(retrievalInterval);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -49,12 +55,17 @@ public class Customer {
                     lock.unlock();
                 }
             }
-        }).start();
+        });
+        retrievalThread.start();
     }
 
     public void stopRetrievingTickets() {
         running = false;
+        if (retrievalThread != null) {
+            retrievalThread.interrupt();
+        }
     }
+
     public boolean isRunning() {
         return running;
     }
