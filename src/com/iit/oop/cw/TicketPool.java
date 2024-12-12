@@ -63,7 +63,7 @@ public class TicketPool extends Configuration {
                     logger.info("💯 All the tickets are released.");
                 }
             } else {
-                throw new IllegalArgumentException("Total Tickets should not exceed the Max Ticket Capacity");
+                logger.info("Total Tickets should not exceed the Max Ticket Capacity");
             }
         } finally {
             ticketLock.unlock();
@@ -88,7 +88,7 @@ public class TicketPool extends Configuration {
                     logger.info("💯 All the tickets have been sold out.");
                 }
             } else {
-                throw new IllegalArgumentException("Total Tickets should not be less than 0");
+                logger.info("All the tickets have been sold out. Waiting for sellers to add Tickets !");
             }
         } finally {
             ticketLock.unlock();

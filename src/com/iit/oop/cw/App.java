@@ -8,7 +8,11 @@ public class App {
     private static Configuration config = new Configuration();
     private static TicketPool ticketPool = new TicketPool();
     private static Vendor vendor = new Vendor(ticketPool);
+    private static Vendor vendor1 = new Vendor(ticketPool);
+    private static Vendor vendor2 = new Vendor(ticketPool);
     private static Customer customer = new Customer(ticketPool);
+    private static Customer customer1 = new Customer(ticketPool);
+    private static Customer customer2 = new Customer(ticketPool);
 
     public static void main(String[] args) {
         setConfiguration();
@@ -175,29 +179,84 @@ public class App {
 
                     if (passedValue == 1) {
                         System.out.print("Enter the release interval in milliseconds: ");
-                        int releaseInterval = Integer.parseInt(scanner.nextLine());
-                        new Thread(() -> vendor.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
-                        System.out.println("Process started successfully in the Background. Check the log files for more information.");
-                        return;
+                        int tempReleaseInterval;
+                        while (true) {
+                            try {
+                                tempReleaseInterval = Integer.parseInt(scanner.nextLine());
+                                if (tempReleaseInterval >= 1000) {
+                                    final int releaseInterval = tempReleaseInterval;
+                                    new Thread(() -> vendor.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
+                                    System.out.println("Process started successfully in the Background. Check the log files for more information.");
+                                    return;
+                                } else {
+                                    System.out.println("Error: Release interval must be greater than 1000 milliseconds.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid positive integer.");
+                            }
+                        }
 
                     } else if (passedValue == 2) {
+                        // Validate retrieval interval input
                         System.out.print("Enter the retrieval interval in milliseconds: ");
-                        int retrievalInterval = Integer.parseInt(scanner.nextLine());
-                        new Thread(() -> customer.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
-                        System.out.println("Process started successfully in the Background. Check the log files for more information.");
-                        return;
+                        int tempRetrievalInterval;
+                        while (true) {
+                            try {
+                                tempRetrievalInterval = Integer.parseInt(scanner.nextLine());
+                                if (tempRetrievalInterval >= 1000) {
+                                    final int retrievalInterval = tempRetrievalInterval;
+                                    new Thread(() -> customer.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
+                                    System.out.println("Process started successfully in the Background. Check the log files for more information.");
+                                    return;
+                                } else {
+                                    System.out.println("Error: Retrieval interval must be greater than 1000 milliseconds.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid positive integer.");
+                            }
+                        }
 
                     } else if (passedValue == 3) {
+                        // Validate release and retrieval intervals input
                         System.out.print("Enter the release interval in milliseconds: ");
-                        int releaseInterval = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Enter the retrieval interval in milliseconds: ");
-                        int retrievalInterval = Integer.parseInt(scanner.nextLine());
-                        new Thread(() -> vendor.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
-                        new Thread(() -> customer.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
-                        System.out.println("Both processes started successfully in the Background. Check the log files for more information.");
-                        return;
+                        int tempReleaseInterval;
+                        while (true) {
+                            try {
+                                tempReleaseInterval = Integer.parseInt(scanner.nextLine());
+                                if (tempReleaseInterval >= 1000) {
+                                    final int releaseInterval = tempReleaseInterval;
+                                    System.out.print("Enter the retrieval interval in milliseconds: ");
+                                    int tempRetrievalInterval;
+                                    while (true) {
+                                        try {
+                                            tempRetrievalInterval = Integer.parseInt(scanner.nextLine());
+                                            if (tempRetrievalInterval >= 1000) {
+                                                final int retrievalInterval = tempRetrievalInterval;
+                                                new Thread(() -> vendor.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
+                                                new Thread(() -> vendor1.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
+                                                new Thread(() -> vendor2.startReleasingTickets(config.getTicketReleaseRate(), releaseInterval)).start();
+                                                new Thread(() -> customer.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
+                                                new Thread(() -> customer1.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
+                                                new Thread(() -> customer2.startRetrievingTickets(config.getCustomerRetrievalRate(), retrievalInterval)).start();
+                                                System.out.println("Both processes started successfully in the Background. Check the log files for more information.");
+                                                return;
+                                            } else {
+                                                System.out.println("Error: Retrieval interval must be greater than 1000 milliseconds.");
+                                            }
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("Invalid input. Please enter a valid positive integer.");
+                                        }
+                                    }
+                                } else {
+                                    System.out.println("Error: Release interval must be greater than 1000 milliseconds.");
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid positive integer.");
+                            }
+                        }
 
                     } else if (passedValue == 4) {
+                        // Reconfigure the releasing rate
                         while (true) {
                             try {
                                 System.out.print("Enter the new ticket release rate: ");
@@ -216,6 +275,7 @@ public class App {
                         break;
 
                     } else if (passedValue == 5) {
+                        // Reconfigure the retrieving rate
                         while (true) {
                             try {
                                 System.out.print("Enter the new customer retrieval rate: ");
@@ -249,7 +309,6 @@ public class App {
             }
         }
     }
-
 
     // Function to stop the process
     public static void stopProcess() {
